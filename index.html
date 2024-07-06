@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ehehcrypter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .dark-mode {
+            background-color: #1a202c;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center dark-mode" id="body">
+    <div class="container mx-auto p-4 max-w-lg bg-gray-800 rounded-lg shadow-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold">ehehcrypter</h1>
+            <div class="flex space-x-4">
+                <a href="https://github.com/lordofwizard" target="_blank" class="text-blue-500 hover:text-blue-400 transition">About</a>
+                <button onclick="toggleMode()" class="focus:outline-none">
+                    <svg id="toggleIcon" class="w-6 h-6 text-yellow-500 hover:text-yellow-400 transition" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 15a5 5 0 100-10 5 5 0 000 10zm0 2a7 7 0 100-14 7 7 0 000 14zm-1 3h2v-2h-2v2zm-7-7H0v-2h2v2zm14 0h2v-2h-2v2zm-7 7h-2v-2h2v2zM3.22 4.22l1.42-1.42L5.64 3.64l-1.42 1.42L3.22 4.22zm11.56 0l1.42-1.42 1.42 1.42-1.42 1.42-1.42-1.42zM4.22 16.78l1.42 1.42-1.42-1.42-1.42 1.42 1.42-1.42zm11.56 0l1.42 1.42-1.42-1.42 1.42 1.42-1.42-1.42z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <textarea id="inputText" class="w-full p-3 border border-gray-600 rounded mb-4 bg-gray-700 text-white" placeholder="Enter your text here..."></textarea>
+        <div class="flex justify-between mb-4">
+            <button onclick="encrypt()" class="w-full p-3 bg-blue-500 text-white rounded mr-2 hover:bg-blue-600 transition">Encrypt</button>
+            <button onclick="decrypt()" class="w-full p-3 bg-green-500 text-white rounded ml-2 hover:bg-green-600 transition">Decrypt</button>
+        </div>
+        <h3 class="text-xl font-semibold mt-4 mb-2">Output:</h3>
+        <div class="output p-3 border border-gray-600 rounded bg-gray-700 text-white" id="outputText"></div>
+    </div>
+
+    <script>
+        const letterMap = {
+            'a': 'm', 'b': 'n', 'c': 'o', 'd': 'p', 'e': 'q', 'f': 'r', 'g': 's', 'h': 't', 'i': 'u', 'j': 'v', 'k': 'w', 'l': 'x',
+            'm': 'a', 'n': 'b', 'o': 'c', 'p': 'd', 'q': 'e', 'r': 'f', 's': 'g', 't': 'h', 'u': 'i', 'v': 'j', 'w': 'k', 'x': 'l',
+            'y': 'z', 'z': 'y'
+        };
+
+        const numberMap = {
+            '0': '1', '1': '0', '2': '9', '3': '8', '4': '7', '5': '6', '6': '5', '7': '4', '8': '3', '9': '2'
+        };
+
+        const symbolMap = {
+            '!': '@', '@': '#', '#': '$', '$': '%', '%': '^', '^': '&', '&': '*', '*': '(', '(': ')', ')': '!', '-': '_', '_': '+', '=': '{', '{': '}', '}': '|', '|': '\\', '\\': ':', ':': ';', ';': '"', '"': "'", "'": '<', '<': '>', '>': ',', ',': '.', '.': '?', '?': '/', '/': '`', '`': '~', '~': '-'
+        };
+
+        function substitutionCipher(text, isEncrypting = true) {
+            let result = '';
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const isUpperCase = char === char.toUpperCase();
+                const lowerChar = char.toLowerCase();
+
+                if (letterMap[lowerChar]) {
+                    const newChar = letterMap[lowerChar];
+                    result += isUpperCase ? newChar.toUpperCase() : newChar;
+                } else if (numberMap[char]) {
+                    result += numberMap[char];
+                } else if (symbolMap[char]) {
+                    result += symbolMap[char];
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+
+        function encrypt() {
+            const text = document.getElementById('inputText').value;
+            const encryptedText = substitutionCipher(text, true);
+            document.getElementById('outputText').innerText = encryptedText;
+        }
+
+        function decrypt() {
+            const text = document.getElementById('inputText').value;
+            const decryptedText = substitutionCipher(text, false);
+            document.getElementById('outputText').innerText = decryptedText;
+        }
+
+        function toggleMode() {
+            const body = document.getElementById('body');
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('bg-gray-900');
+            body.classList.toggle('text-white');
+            const container = document.querySelector('.container');
+            container.classList.toggle('bg-gray-800');
+            container.classList.toggle('bg-white');
+            const inputText = document.getElementById('inputText');
+            inputText.classList.toggle('bg-gray-700');
+            inputText.classList.toggle('bg-white');
+            inputText.classList.toggle('text-white');
+            inputText.classList.toggle('text-black');
+            const outputText = document.getElementById('outputText');
+            outputText.classList.toggle('bg-gray-700');
+            outputText.classList.toggle('bg-gray-50');
+            outputText.classList.toggle('text-white');
+            outputText.classList.toggle('text-black');
+            const toggleIcon = document.getElementById('toggleIcon');
+            toggleIcon.classList.toggle('text-yellow-500');
+            toggleIcon.classList.toggle('text-yellow-300');
+        }
+    </script>
+</body>
+</html>
+
